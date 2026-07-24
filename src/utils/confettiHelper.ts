@@ -1,44 +1,63 @@
 import confetti from 'canvas-confetti';
 
 export const triggerFlowerConfetti = () => {
-  // 1. Membuat bentuk kelopak bunga menggunakan SVG Path
-  // Path ini menggambar bentuk melengkung mirip daun atau kelopak mawar
+  // 1. Create a beautiful flower petal shape using SVG Path
   const petalShape = confetti.shapeFromPath({
     path: 'M24 0 C38 15 35 30 24 35 C13 30 10 15 24 0',
   });
 
-  // 2. Menentukan palet warna (Cokelat muda, Cokelat tua, Biru muda, Biru klasik)
-  const colors = ['#a3704c', '#c89666', '#4f7cac', '#3a6073'];
+  // 2. Color Palette (warm browns, classic blues, light rose pink)
+  const colors = ['#a3704c', '#c89666', '#4f7cac', '#3a6073', '#ffb6c1', '#fdfdfb'];
 
-  // 3. Logika durasi dan animasi (berjalan selama 3 detik)
-  const duration = 3000;
+  // 3. 5.5-second dramatic duration
+  const duration = 5500;
   const end = Date.now() + duration;
 
-  // 4. Fungsi loop untuk menembakkan kelopak secara terus-menerus
+  // 4. Double frame loop to fire dense particles from both sides
   (function frame() {
+    // Left burst — denser particles (count increased to 12)
     confetti({
-      particleCount: 5,       // Jumlah kelopak per tembakan
-      angle: 60,              // Sudut tembakan kiri
-      spread: 55,             // Seberapa lebar tebarannya
-      origin: { x: 0 },       // Ditembakkan dari ujung kiri layar
-      colors: colors,
-      shapes: [petalShape],   // Menggunakan bentuk kelopak SVG
-      scalar: 1.2,            // Ukuran kelopak
-      ticks: 300,             // Seberapa lama kelopak melayang sebelum hilang
-    });
-
-    confetti({
-      particleCount: 5,
-      angle: 120,             // Sudut tembakan kanan
-      spread: 55,
-      origin: { x: 1 },       // Ditembakkan dari ujung kanan layar
+      particleCount: 12,
+      angle: 60,
+      spread: 75,
+      origin: { x: 0, y: 0.8 },
       colors: colors,
       shapes: [petalShape],
-      scalar: 1.2,
-      ticks: 300,
+      scalar: 1.4,
+      ticks: 350,
+      gravity: 0.75,
+      drift: 0.5,
     });
 
-    // Terus tembakkan sampai durasi (3 detik) habis
+    // Right burst — denser particles (count increased to 12)
+    confetti({
+      particleCount: 12,
+      angle: 120,
+      spread: 75,
+      origin: { x: 1, y: 0.8 },
+      colors: colors,
+      shapes: [petalShape],
+      scalar: 1.4,
+      ticks: 350,
+      gravity: 0.75,
+      drift: -0.5,
+    });
+
+    // Central splash occasionally for added density
+    if (Math.random() < 0.15) {
+      confetti({
+        particleCount: 8,
+        angle: 90,
+        spread: 90,
+        origin: { x: 0.5, y: 0.6 },
+        colors: colors,
+        shapes: [petalShape],
+        scalar: 1.2,
+        ticks: 300,
+        gravity: 0.8,
+      });
+    }
+
     if (Date.now() < end) {
       requestAnimationFrame(frame);
     }

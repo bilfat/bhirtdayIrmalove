@@ -8,6 +8,32 @@ import {
 } from 'framer-motion';
 import { Heart, ChevronRight } from 'lucide-react';
 
+// ─── Local image imports (src/assets/berdua/) ────────────────────────────────
+// 3D heart gallery — 7 foreground frames
+import img1  from '../assets/berdua/1.jpeg';
+import img2  from '../assets/berdua/2.jpeg';
+import img7  from '../assets/berdua/7.jpeg';
+import img11 from '../assets/berdua/11.jpeg';
+import img14 from '../assets/berdua/14.jpeg';
+import img19 from '../assets/berdua/19.jpeg';
+import img22 from '../assets/berdua/22.jpeg';
+
+// Falling background — remaining 15 files
+import img3  from '../assets/berdua/3.jpeg';
+import img4  from '../assets/berdua/4.jpeg';
+import img5  from '../assets/berdua/5.jpeg';
+import img6  from '../assets/berdua/6.jpeg';
+import img8  from '../assets/berdua/8.jpeg';
+import img9  from '../assets/berdua/9.jpeg';
+import img10 from '../assets/berdua/10.jpeg';
+import img13 from '../assets/berdua/13.jpeg';
+import img15 from '../assets/berdua/15.jpeg';
+import img16 from '../assets/berdua/16.jpeg';
+import img17 from '../assets/berdua/17.jpeg';
+import img18 from '../assets/berdua/18.jpeg';
+import img20 from '../assets/berdua/20.jpeg';
+import img21 from '../assets/berdua/21.jpeg';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // EDIT YOUR PHOTOS HERE
 // x, y : position offset from the center of the heart container (in px)
@@ -27,43 +53,43 @@ interface PhotoCard {
 const photos: PhotoCard[] = [
   {
     id: 1,
-    imageUrl: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&auto=format&fit=crop',
+    imageUrl: img1,
     caption: 'Momen Pertama',
     x: -140, y: -120, z: 30, tilt: -7,
   },
   {
     id: 2,
-    imageUrl: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&auto=format&fit=crop',
+    imageUrl: img2,
     caption: 'My Love',
     x: 140, y: -120, z: 30, tilt: 6,
   },
   {
     id: 3,
-    imageUrl: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&auto=format&fit=crop',
+    imageUrl: img7,
     caption: 'Jalan Berdua',
     x: -200, y: 10, z: 0, tilt: -4,
   },
   {
     id: 4,
-    imageUrl: 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&auto=format&fit=crop',
+    imageUrl: img11,
     caption: 'Hari Spesial',
     x: 200, y: 10, z: 0, tilt: 5,
   },
   {
     id: 5,
-    imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop',
+    imageUrl: img14,
     caption: 'Waktu Bersama',
     x: -120, y: 150, z: -20, tilt: 8,
   },
   {
     id: 6,
-    imageUrl: 'https://images.unsplash.com/photo-1488716820095-cbe80883c496?w=400&auto=format&fit=crop',
+    imageUrl: img19,
     caption: 'Selamanya',
     x: 120, y: 150, z: -20, tilt: -6,
   },
   {
     id: 7,
-    imageUrl: 'https://images.unsplash.com/photo-1542596594-649edbc13630?w=400&auto=format&fit=crop',
+    imageUrl: img22,
     caption: 'Always & Forever',
     x: 0, y: 240, z: -40, tilt: 2,
   },
@@ -116,6 +142,121 @@ const generateSparkles = (count: number): Sparkle[] => {
   });
 };
 
+// ─── Falling background photos ────────────────────────────────────────────
+// All remaining berdua images not used in the 3D gallery.
+// To swap in your own photos, replace the imported variables above.
+const allFallingPhotos: string[] = [
+  img3, img4, img5, img6, img8, img9, img10,
+  img13, img15, img16, img17, img18, img19, img20, img21,
+];
+
+interface FallingCard {
+  id: number;
+  imageUrl: string;
+  // vw units for x position so it's viewport-relative
+  xVw: number;
+  // px size for the card width
+  size: number;
+  duration: number;
+  delay: number;
+  // initial rotation in degrees
+  startRotate: number;
+  // final rotation (card spins slightly as it falls)
+  endRotate: number;
+  opacity: number;
+}
+
+const rand = (min: number, max: number) => Math.random() * (max - min) + min;
+
+// Generate 15 falling cards with fully randomised properties.
+// Wrapped in a factory so useMemo can call it once.
+const makeFallingCards = (): FallingCard[] =>
+  Array.from({ length: 15 }, (_, i) => ({
+    id: i,
+    imageUrl: allFallingPhotos[i % allFallingPhotos.length],
+    xVw:         rand(2, 96),      // spread across 2%–96% of viewport width
+    size:        rand(64, 100),    // slightly larger cards for better visibility
+    duration:    rand(9, 18),      // fall duration in seconds
+    delay:       rand(0, 12),      // stagger so they don't all start at once
+    startRotate: rand(-18, 18),    // initial tilt
+    endRotate:   rand(-22, 22),    // tilt at bottom (subtle drift)
+    opacity:     rand(0.60, 0.85), // clearly visible against dark background
+  }));
+
+// The FallingPhotos layer — sits behind title and 3D gallery, but above global bg
+const FallingPhotos: React.FC = () => {
+  // Generate once, never re-randomize
+  const cards = useMemo(makeFallingCards, []);
+
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 overflow-hidden pointer-events-none"
+      style={{ zIndex: 1 }}
+    >
+      {cards.map((card) => (
+        <motion.div
+          key={card.id}
+          // Start above the visible area, fall to below it
+          initial={{
+            top: '-15%',
+            opacity: 0,
+            rotate: card.startRotate,
+          }}
+          animate={{
+            top: '112%',
+            opacity: [0, card.opacity, card.opacity, 0],
+            rotate: card.endRotate,
+          }}
+          transition={{
+            duration: card.duration,
+            delay: card.delay,
+            repeat: Infinity,
+            ease: 'linear',
+            // Opacity keyframe timings: fade in fast, hold, fade out near bottom
+            opacity: { times: [0, 0.08, 0.85, 1], ease: 'easeInOut' },
+          }}
+          style={{
+            position: 'absolute',
+            left: `${card.xVw}%`,
+            width: card.size,
+            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.55))',
+          }}
+        >
+          {/* Mini polaroid frame — warm white card with glow border */}
+          <div
+            style={{
+              background: '#fdfdfb',
+              padding: '5px',
+              paddingBottom: '16px',
+              // Warm border + subtle rose-gold glow so it pops on dark bg
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.55), 0 6px 20px rgba(0,0,0,0.55), 0 0 12px rgba(255,182,193,0.18)',
+              borderRadius: '2px',
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                aspectRatio: '1 / 1',
+                overflow: 'hidden',
+                background: '#e5e0db',
+              }}
+            >
+              <img
+                src={card.imageUrl}
+                alt=""
+                loading="lazy"
+                draggable={false}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface GallerySectionProps {
@@ -124,16 +265,21 @@ interface GallerySectionProps {
 
 // Individual sparkle — rendered as a Framer Motion animated circle
 const SparkleParticle: React.FC<Sparkle> = ({ cx, cy, r, delay, duration, color }) => {
+  const safeR = typeof r === 'number' ? r : 3;
   return (
     <motion.circle
       cx={cx}
       cy={cy}
-      r={r}
+      r={safeR}
       fill={color}
-      initial={{ opacity: 0, r: 0 }}
+      initial={{ opacity: 0, scale: 0 }}
       animate={{
         opacity: [0, 1, 0.6, 1, 0],
-        r: [0, r, r * 1.8, r, 0],
+        scale: [0, 1, 1.8, 1, 0],
+      }}
+      style={{
+        originX: `${cx}px`,
+        originY: `${cy}px`,
       }}
       transition={{
         duration,
@@ -148,6 +294,10 @@ const SparkleParticle: React.FC<Sparkle> = ({ cx, cy, r, delay, duration, color 
 export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
   const sceneRef = useRef<HTMLDivElement>(null);
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  // activeId persists after click — needed for mobile where hover doesn't exist.
+  // Clicking a card brings it to the very front (zIndex 200); clicking again or
+  // clicking another card clears it.
+  const [activeId, setActiveId] = useState<number | null>(null);
   const [isEntered, setIsEntered] = useState(false);
 
   // Stable sparkle data — generated only once
@@ -209,6 +359,9 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
 
   return (
     <section className="relative min-h-screen w-full flex flex-col items-center justify-center px-3 sm:px-6 py-12 sm:py-16 bg-transparent overflow-x-hidden select-none">
+
+      {/* ── Falling photo background — z-0, pointer-events-none ──────────── */}
+      <FallingPhotos />
 
       {/* ── Title ──────────────────────────────────────────────────────────── */}
       <motion.div
@@ -352,10 +505,15 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
                 r={4}
                 fill="rgba(255,215,0,0.9)"
                 filter="url(#sparkleGlow)"
+                initial={{ scale: 1, opacity: 0.4 }}
                 animate={{
                   opacity: [0.4, 1, 0.4],
-                  r: [3, 5, 3],
+                  scale: [0.75, 1.25, 0.75],
                   fill: ['rgba(255,215,0,0.9)', 'rgba(255,182,193,1)', 'rgba(255,215,0,0.9)'],
+                }}
+                style={{
+                  originX: `${cx}px`,
+                  originY: `${cy}px`,
                 }}
                 transition={{ duration: 2.5 + Math.random(), repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
               />
@@ -412,14 +570,16 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
                 }}
                 onHoverStart={() => setHoveredId(photo.id)}
                 onHoverEnd={() => setHoveredId(null)}
+                onClick={() => setActiveId(prev => prev === photo.id ? null : photo.id)}
                 className="absolute cursor-pointer"
                 style={{
                   x: photo.x,
                   y: photo.y,
                   rotate: photo.tilt,
-                  zIndex: isHovered ? 100 : isOtherHovered ? 1 : 10 + index,
+                  // Priority: activeId (click) > hoveredId (mouse) > default stack
+                  zIndex: activeId === photo.id ? 200 : isHovered ? 100 : isOtherHovered ? 1 : 10 + index,
                   transformStyle: 'preserve-3d',
-                  opacity: isOtherHovered ? 0.55 : 1,
+                  opacity: isOtherHovered && activeId !== photo.id ? 0.45 : 1,
                   transition: 'opacity 0.3s ease',
                 }}
               >
@@ -428,7 +588,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
                   className="relative bg-white rounded-sm"
                   style={{
                     padding: '10px',
-                    paddingBottom: '40px',
+                    paddingBottom: '14px',
                     width: 'clamp(112px, 14vw, 152px)',
                     // Warmer, richer shadow with a faint rose-gold ambient glow
                     boxShadow: isHovered
@@ -452,15 +612,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
                     />
                   </div>
 
-                  {/* Caption */}
-                  <p
-                    className="font-serif text-center italic text-gray-600"
-                    style={{ fontSize: 'clamp(9px, 1.1vw, 12px)', marginTop: '8px' }}
-                  >
-                    {photo.caption}
-                  </p>
-
-                  {/* Rose-gold inner glow on hover */}
+                  {/* Rose-gold inner glow on hover or active */}
                   {isHovered && (
                     <motion.div
                       initial={{ opacity: 0 }}
