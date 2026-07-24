@@ -5,6 +5,7 @@ import { HeroSection } from './components/HeroSection';
 import { GiftSection } from './components/GiftSection';
 import { LetterSection } from './components/LetterSection';
 import { VideoSection } from './components/VideoSection';
+import { GallerySection } from './components/GallerySection';
 import { FooterSection } from './components/FooterSection';
 import { Volume2, VolumeX } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
@@ -30,7 +31,7 @@ const FloatingAudioControls: React.FC = () => {
     >
       <button
         onClick={togglePlay}
-        className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#1e1a18]/70 border border-theme-brownDark/30 backdrop-blur-md text-theme-brownLight hover:text-white transition-all duration-300 hover:border-theme-blueMedium/50 shadow-lg cursor-pointer group"
+        className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 min-h-[44px] rounded-full bg-[#1e1a18]/70 border border-theme-brownDark/30 backdrop-blur-md text-theme-brownLight hover:text-white transition-all duration-300 hover:border-theme-blueMedium/50 shadow-lg cursor-pointer group"
       >
         {/* Equalizer animation when playing */}
         <AnimatePresence>
@@ -65,14 +66,17 @@ const MainContent: React.FC = () => {
   const [step, setStep] = useState(1);
   const { switchTheme } = useAudio();
 
-  // Effect to switch audio themes based on the current page step
+  // Effect to switch audio themes based on the current page step.
+  // IMPORTANT: `switchTheme` is intentionally omitted from the dep array.
+  // It is stable (reads theme from a ref internally), so listing it would
+  // cause this effect to re-fire mid-crossfade and interrupt the audio.
   useEffect(() => {
     if (step <= 3) {
-      switchTheme('her'); // Theme for Hero, Gift, Letter
+      switchTheme('her'); // Steps 1–3: Hero, Gift, Letter → lany.mp3
     } else {
-      switchTheme('us'); // Theme for Videos, Closing
+      switchTheme('us');  // Steps 4–6: Video, Gallery, Closing → alexander.mp3
     }
-  }, [step, switchTheme]);
+  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleNext = () => {
     setStep((prev) => prev + 1);
@@ -109,7 +113,7 @@ const MainContent: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen z-10 w-full overflow-hidden">
+    <div className="relative min-h-screen z-10 w-full overflow-x-hidden">
       {/* 1. Floating Global Controls */}
       <FloatingAudioControls />
 
@@ -170,6 +174,19 @@ const MainContent: React.FC = () => {
         {step === 5 && (
           <motion.div
             key="step5"
+            variants={dreamyVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="w-full min-h-screen flex items-center justify-center absolute inset-0"
+          >
+            <GallerySection onNext={handleNext} />
+          </motion.div>
+        )}
+
+        {step === 6 && (
+          <motion.div
+            key="step6"
             variants={dreamyVariants}
             initial="initial"
             animate="animate"

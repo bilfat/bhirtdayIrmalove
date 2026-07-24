@@ -33,8 +33,8 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
 
   return (
     <section className="relative min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-theme-blueMedium/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Background glow — responsive size */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-[500px] h-72 sm:h-[500px] bg-theme-blueMedium/5 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-xl text-center z-10 flex flex-col items-center">
         <motion.div
@@ -47,17 +47,17 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
             <Gift size={14} className="text-theme-brownMedium" />
             Sebuah Kejutan Kecil
           </span>
-          <h2 className="font-serif text-3xl md:text-4xl text-theme-brownLight font-light mb-4">
+          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-theme-brownLight font-light mb-4">
             Ada sesuatu yang khusus dibuat untukmu
           </h2>
-          <p className="font-sans text-xs md:text-sm text-theme-blueLight/60 tracking-wider max-w-sm mb-12">
+          <p className="font-sans text-xs sm:text-sm text-theme-blueLight/60 tracking-wider max-w-xs sm:max-w-sm mb-10 sm:mb-12">
             Klik kado di bawah ini untuk membuka kejutan indah yang menunggumu di dalam.
           </p>
         </motion.div>
 
-        {/* Dynamic SVG Gift Box */}
+        {/* Dynamic SVG Gift Box — smaller on mobile */}
         <div
-          className="relative w-64 h-64 flex justify-center items-center cursor-pointer mb-8"
+          className="relative w-48 h-48 sm:w-64 sm:h-64 flex justify-center items-center cursor-pointer mb-6 sm:mb-8"
           onClick={handleOpenGift}
         >
           <AnimatePresence>
@@ -71,8 +71,8 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
                 whileHover={{ y: -5 }}
                 className="relative"
               >
-                {/* SVG Kado */}
-                <svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
+                {/* SVG Kado — viewBox scales naturally */}
+                <svg width="100%" height="100%" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg" className="filter drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
                   <motion.g animate={{ y: [-2, 2, -2] }} transition={{ repeat: Infinity, duration: 2 }}>
                     <rect x="35" y="55" width="150" height="30" rx="4" fill="#3a6073" />
                     <rect x="100" y="55" width="20" height="30" fill="#a3704c" />
@@ -105,7 +105,7 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
           <button
             onClick={handleOpenGift}
             disabled={isOpened}
-            className={`px-10 py-4 rounded-full font-sans text-xs tracking-[0.2em] uppercase font-bold transition-all duration-500 cursor-pointer shadow-lg ${
+            className={`min-h-[44px] px-8 sm:px-10 py-3 sm:py-4 rounded-full font-sans text-xs tracking-[0.2em] uppercase font-bold transition-all duration-500 cursor-pointer shadow-lg ${
               isOpened
                 ? 'bg-theme-blueDark/40 text-theme-blueLight/40'
                 : 'bg-gradient-to-r from-theme-brownDark to-theme-blueDark text-white hover:from-theme-brownMedium hover:to-theme-blueMedium'

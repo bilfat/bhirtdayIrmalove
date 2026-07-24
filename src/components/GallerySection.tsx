@@ -1,153 +1,512 @@
-import React from 'react';
-import { motion, type Variants } from 'framer-motion';
-import { Camera } from 'lucide-react';
+import React, { useRef, useState, useCallback, useEffect, useMemo } from 'react';
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  animate,
+} from 'framer-motion';
+import { Heart, ChevronRight } from 'lucide-react';
 
-interface PolaroidPhoto {
+// ─────────────────────────────────────────────────────────────────────────────
+// EDIT YOUR PHOTOS HERE
+// x, y : position offset from the center of the heart container (in px)
+// tilt  : initial subtle rotation of the polaroid frame (in deg)
+// z     : depth offset for parallax feel (-ve = further back, +ve = closer)
+// ─────────────────────────────────────────────────────────────────────────────
+interface PhotoCard {
   id: number;
-  url: string;
+  imageUrl: string;
   caption: string;
-  rotation: string; // Tailwind class for rotation (e.g. rotate-3)
-  delay: number;
+  x: number;
+  y: number;
+  z: number;
+  tilt: number;
 }
 
-export const GallerySection: React.FC = () => {
-  const photos: PolaroidPhoto[] = [
-    {
-      id: 1,
-      url: 'https://images.unsplash.com/photo-1497515114629-f71d768fd07c?q=80&w=600&auto=format&fit=crop',
-      caption: 'Secangkir hangat di pagi hari',
-      rotation: 'hover:rotate-0 -rotate-3',
-      delay: 0.1,
-    },
-    {
-      id: 2,
-      url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop',
-      caption: 'Menatap senja di ujung pantai',
-      rotation: 'hover:rotate-0 rotate-2',
-      delay: 0.2,
-    },
-    {
-      id: 3,
-      url: 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=600&auto=format&fit=crop',
-      caption: 'Mekar indah seperti senyummu',
-      rotation: 'hover:rotate-0 -rotate-2',
-      delay: 0.3,
-    },
-    {
-      id: 4,
-      url: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=600&auto=format&fit=crop',
-      caption: 'Cerita lama yang abadi',
-      rotation: 'hover:rotate-0 rotate-3',
-      delay: 0.1,
-    },
-    {
-      id: 5,
-      url: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=600&auto=format&fit=crop',
-      caption: 'Momen kecil penuh tawa',
-      rotation: 'hover:rotate-0 -rotate-1',
-      delay: 0.2,
-    },
-    {
-      id: 6,
-      url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop',
-      caption: 'Mengabadikan setiap detik',
-      rotation: 'hover:rotate-0 rotate-1',
-      delay: 0.3,
-    },
+const photos: PhotoCard[] = [
+  {
+    id: 1,
+    imageUrl: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400&auto=format&fit=crop',
+    caption: 'Momen Pertama',
+    x: -140, y: -120, z: 30, tilt: -7,
+  },
+  {
+    id: 2,
+    imageUrl: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&auto=format&fit=crop',
+    caption: 'My Love',
+    x: 140, y: -120, z: 30, tilt: 6,
+  },
+  {
+    id: 3,
+    imageUrl: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400&auto=format&fit=crop',
+    caption: 'Jalan Berdua',
+    x: -200, y: 10, z: 0, tilt: -4,
+  },
+  {
+    id: 4,
+    imageUrl: 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=400&auto=format&fit=crop',
+    caption: 'Hari Spesial',
+    x: 200, y: 10, z: 0, tilt: 5,
+  },
+  {
+    id: 5,
+    imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&auto=format&fit=crop',
+    caption: 'Waktu Bersama',
+    x: -120, y: 150, z: -20, tilt: 8,
+  },
+  {
+    id: 6,
+    imageUrl: 'https://images.unsplash.com/photo-1488716820095-cbe80883c496?w=400&auto=format&fit=crop',
+    caption: 'Selamanya',
+    x: 120, y: 150, z: -20, tilt: -6,
+  },
+  {
+    id: 7,
+    imageUrl: 'https://images.unsplash.com/photo-1542596594-649edbc13630?w=400&auto=format&fit=crop',
+    caption: 'Always & Forever',
+    x: 0, y: 240, z: -40, tilt: 2,
+  },
+];
+
+// ─── Heart path constants ──────────────────────────────────────────────────
+// Shared SVG heart path used by both the glow outline and the sparkle sampler.
+// ViewBox: "0 0 400 360", heart spans from (20,20) to (380,320).
+const HEART_PATH = "M200 320 C100 250, 20 200, 20 120 C20 60, 60 20, 110 20 C145 20, 175 40, 200 65 C225 40, 255 20, 290 20 C340 20, 380 60, 380 120 C380 200, 300 250, 200 320Z";
+
+// ─── Sparkle particle generator ────────────────────────────────────────────
+// Samples positions from the parametric heart curve and adds random jitter
+// so sparkles distribute naturally along the heart outline.
+interface Sparkle {
+  id: number;
+  // position relative to SVG center (0=200, 0=180 in the 400×360 vb)
+  cx: number;
+  cy: number;
+  r: number;
+  delay: number;
+  duration: number;
+  color: string;
+}
+
+const generateSparkles = (count: number): Sparkle[] => {
+  const sparkleColors = [
+    'rgba(255,182,193,0.9)',   // rose-pink
+    'rgba(255,215,0,0.85)',    // warm gold
+    'rgba(200,150,102,0.9)',   // theme brown-medium
+    'rgba(163,194,222,0.85)',  // theme blue-light
+    'rgba(255,255,255,0.9)',   // white shimmer
   ];
 
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+  return Array.from({ length: count }, (_, i) => {
+    const t = (i / count) * 2 * Math.PI;
+    // Parametric heart formula, scaled & offset to the 400×360 viewBox
+    const scale = 11;
+    const cx = 200 + 16 * Math.pow(Math.sin(t), 3) * scale;
+    const cy = 180 - (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale;
 
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: (customDelay: number) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: 'spring',
-        stiffness: 70,
-        damping: 15,
-        delay: customDelay,
-      },
-    }),
-  };
+    return {
+      id: i,
+      cx: cx + (Math.random() - 0.5) * 12, // slight jitter
+      cy: cy + (Math.random() - 0.5) * 12,
+      r: Math.random() * 2.5 + 1,
+      delay: Math.random() * 3.5,
+      duration: 1.2 + Math.random() * 2,
+      color: sparkleColors[Math.floor(Math.random() * sparkleColors.length)],
+    };
+  });
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface GallerySectionProps {
+  onNext: () => void;
+}
+
+// Individual sparkle — rendered as a Framer Motion animated circle
+const SparkleParticle: React.FC<Sparkle> = ({ cx, cy, r, delay, duration, color }) => {
+  return (
+    <motion.circle
+      cx={cx}
+      cy={cy}
+      r={r}
+      fill={color}
+      initial={{ opacity: 0, r: 0 }}
+      animate={{
+        opacity: [0, 1, 0.6, 1, 0],
+        r: [0, r, r * 1.8, r, 0],
+      }}
+      transition={{
+        duration,
+        delay,
+        repeat: Infinity,
+        ease: 'easeInOut',
+      }}
+    />
+  );
+};
+
+export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [isEntered, setIsEntered] = useState(false);
+
+  // Stable sparkle data — generated only once
+  const sparkles = useMemo(() => generateSparkles(40), []);
+
+  // Raw mouse/touch offset — normalized to [-0.5, 0.5]
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+
+  // Spring-smoothed rotation values
+  const springX = useSpring(rawX, { stiffness: 35, damping: 28, mass: 1 });
+  const springY = useSpring(rawY, { stiffness: 35, damping: 28, mass: 1 });
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-30, 30]);
+  const rotateX = useTransform(springY, [-0.5, 0.5], [18, -18]);
+
+  // Pulsing heart glow opacity
+  const glowOpacity = useMotionValue(0.45);
+  useEffect(() => {
+    const controls = animate(glowOpacity, [0.45, 0.85, 0.45], {
+      duration: 2.8,
+      repeat: Infinity,
+      ease: 'easeInOut',
+    });
+    return controls.stop;
+  }, [glowOpacity]);
+
+  // ── Mouse tracking ─────────────────────────────────────────────────────────
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!sceneRef.current) return;
+    const rect = sceneRef.current.getBoundingClientRect();
+    rawX.set((e.clientX - rect.left) / rect.width - 0.5);
+    rawY.set((e.clientY - rect.top) / rect.height - 0.5);
+  }, [rawX, rawY]);
+
+  const handleMouseLeave = useCallback(() => {
+    rawX.set(0);
+    rawY.set(0);
+  }, [rawX, rawY]);
+
+  // ── Touch tracking ──────────────────────────────────────────────────────────
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (!sceneRef.current || e.touches.length === 0) return;
+    const rect = sceneRef.current.getBoundingClientRect();
+    const touch = e.touches[0];
+    rawX.set((touch.clientX - rect.left) / rect.width - 0.5);
+    rawY.set((touch.clientY - rect.top) / rect.height - 0.5);
+  }, [rawX, rawY]);
+
+  const handleTouchEnd = useCallback(() => {
+    rawX.set(0);
+    rawY.set(0);
+  }, [rawX, rawY]);
+
+  // Staggered entrance
+  useEffect(() => {
+    const timer = setTimeout(() => setIsEntered(true), 200);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <section className="relative min-h-screen px-6 py-24 bg-[#12100e] overflow-hidden">
-      {/* Decorative Blur Backgrounds */}
-      <div className="absolute top-1/3 left-10 w-96 h-96 bg-theme-blueMedium/5 rounded-full blur-[100px] pointer-events-none animate-pulse-slow"></div>
-      <div className="absolute bottom-1/3 right-10 w-96 h-96 bg-theme-brownDark/5 rounded-full blur-[100px] pointer-events-none animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center px-3 sm:px-6 py-12 sm:py-16 bg-transparent overflow-x-hidden select-none">
 
-      <div className="max-w-6xl mx-auto flex flex-col items-center">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16 flex flex-col items-center"
+      {/* ── Title ──────────────────────────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: -24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.9, delay: 0.1 }}
+        className="text-center z-10 mb-6"
+      >
+        <span className="flex justify-center items-center gap-2 font-sans text-[10px] md:text-xs tracking-[0.25em] uppercase text-theme-blueLight/70 mb-2">
+          <Heart size={12} className="fill-theme-brownMedium/60 text-theme-brownMedium/60" />
+          Kenangan Kita
+        </span>
+        <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-theme-brownLight font-light">
+          Momen Foto Bersama Lucu
+        </h2>
+        <p className="font-sans text-[10px] sm:text-[11px] text-theme-blueLight/40 tracking-widest mt-2 uppercase">
+          Geser untuk memutar • Sentuh foto untuk memperbesar
+        </p>
+      </motion.div>
+
+      {/* ── 3D Scene Wrapper ──────────────────────────────────────────────── */}
+      <motion.div
+        ref={sceneRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        className="relative w-full max-w-3xl"
+        style={{
+          height: 'clamp(420px, 60vh, 560px)',
+          perspective: '1100px',
+          perspectiveOrigin: '50% 50%',
+          cursor: 'grab',
+        }}
+      >
+
+        {/* ════════════════════════════════════════════════════════════════════
+            GLOWING HEART SVG — sits behind the 3D scene (pointer-events-none)
+            Layer 1: Radial ambient glow in the center
+            Layer 2: Wide blurred heart stroke (outer glow halo)
+            Layer 3: Medium blurred heart stroke (mid glow)
+            Layer 4: Sharp heart stroke (crisp edge)
+            Layer 5: 40 twinkling sparkle particles along the curve
+        ════════════════════════════════════════════════════════════════════ */}
+        <motion.svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 400 360"
+          preserveAspectRatio="xMidYMid meet"
+          style={{ opacity: glowOpacity }}
         >
-          <span className="text-xs font-sans tracking-[0.25em] uppercase text-theme-brownMedium font-semibold flex items-center gap-1.5 mb-3">
-            <Camera size={14} className="text-theme-blueMedium" />
-            Galeri Memori
-          </span>
-          <h2 className="font-serif text-3xl md:text-5xl text-theme-brownLight font-light tracking-wide">
-            Setiap Detik Bersamamu
-          </h2>
-          <p className="font-sans text-xs md:text-sm text-theme-blueLight/60 tracking-wider max-w-md mt-4">
-            Kumpulan potret kecil yang melukiskan kenangan manis dan hangat di antara kita.
-          </p>
-        </motion.div>
+          <defs>
+            {/* ── Radial centre glow ───────────────────────────────────────── */}
+            <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%"   stopColor="rgba(255,182,193,0.18)" />
+              <stop offset="55%"  stopColor="rgba(200,150,102,0.08)" />
+              <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+            </radialGradient>
 
-        {/* Polaroid Grid Layout */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 w-full px-4"
-        >
-          {photos.map((photo) => (
-            <motion.div
-              key={photo.id}
-              variants={itemVariants}
-              custom={photo.delay}
-              className={`polaroid-card flex flex-col bg-[#fdfdfb] p-4 pb-6 border border-gray-200/50 rounded-sm transform ${photo.rotation} select-none`}
-            >
-              {/* Photo Area */}
-              <div className="relative aspect-square overflow-hidden bg-gray-100 rounded-sm">
-                <img
-                  src={photo.url}
-                  alt={photo.caption}
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
-                  loading="lazy"
-                />
-                {/* Vintage overlay texture */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
-              </div>
+            {/* ── Outer blur filter for the glow halo ─────────────────────── */}
+            <filter id="outerGlow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="14" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="blur" />
+              </feMerge>
+            </filter>
 
-              {/* Caption Area */}
-              <div className="mt-5 text-center flex flex-col items-center justify-center">
-                <p className="font-serif text-gray-800 text-base italic leading-tight">
-                  {photo.caption}
-                </p>
-                {/* Small heart/stamp stamp */}
-                <span className="text-[10px] text-gray-400 font-sans tracking-widest uppercase mt-2 font-semibold">
-                  Memory #{photo.id}
-                </span>
-              </div>
-            </motion.div>
+            {/* ── Mid blur filter ──────────────────────────────────────────── */}
+            <filter id="midGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+
+            {/* ── Sparkle dot glow filter ──────────────────────────────────── */}
+            <filter id="sparkleGlow" x="-200%" y="-200%" width="500%" height="500%">
+              <feGaussianBlur stdDeviation="2.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Layer 1 — Radial ambient glow blob */}
+          <ellipse cx="200" cy="175" rx="170" ry="145" fill="url(#centerGlow)" />
+
+          {/* Layer 2 — Wide outer glow halo (very blurred, rose-gold) */}
+          <path
+            d={HEART_PATH}
+            fill="none"
+            stroke="rgba(255,182,193,0.65)"
+            strokeWidth="18"
+            filter="url(#outerGlow)"
+          />
+
+          {/* Layer 3 — Medium inner glow (warm amber/rose) */}
+          <path
+            d={HEART_PATH}
+            fill="none"
+            stroke="rgba(255,200,150,0.7)"
+            strokeWidth="5"
+            filter="url(#midGlow)"
+          />
+
+          {/* Layer 4 — Crisp sharp stroke (rose pink) */}
+          <motion.path
+            d={HEART_PATH}
+            fill="none"
+            stroke="rgba(255,182,193,0.9)"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            // Draw-on animation using dasharray
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ pathLength: 1, opacity: 1 }}
+            transition={{ duration: 2.2, delay: 0.4, ease: 'easeInOut' }}
+          />
+
+          {/* Layer 5 — Twinkling sparkles along the heart curve */}
+          <g filter="url(#sparkleGlow)">
+            {sparkles.map(s => (
+              <SparkleParticle key={s.id} {...s} />
+            ))}
+          </g>
+
+          {/* A few larger accent stars at key positions on the heart */}
+          {[
+            { cx: 200, cy: 320, label: 'bottom' },
+            { cx: 110, cy: 20,  label: 'leftLobe' },
+            { cx: 290, cy: 20,  label: 'rightLobe' },
+            { cx: 20,  cy: 120, label: 'leftSide' },
+            { cx: 380, cy: 120, label: 'rightSide' },
+          ].map(({ cx, cy, label }) => (
+            <motion.g key={label}>
+              <motion.circle
+                cx={cx}
+                cy={cy}
+                r={4}
+                fill="rgba(255,215,0,0.9)"
+                filter="url(#sparkleGlow)"
+                animate={{
+                  opacity: [0.4, 1, 0.4],
+                  r: [3, 5, 3],
+                  fill: ['rgba(255,215,0,0.9)', 'rgba(255,182,193,1)', 'rgba(255,215,0,0.9)'],
+                }}
+                transition={{ duration: 2.5 + Math.random(), repeat: Infinity, ease: 'easeInOut', delay: Math.random() * 2 }}
+              />
+              {/* Cross sparkle arms */}
+              <motion.line
+                x1={cx - 8} y1={cy} x2={cx + 8} y2={cy}
+                stroke="rgba(255,215,0,0.7)" strokeWidth="1"
+                animate={{ opacity: [0, 0.8, 0], scaleX: [0.5, 1, 0.5] }}
+                transition={{ duration: 2 + Math.random(), repeat: Infinity, delay: Math.random() * 2 }}
+              />
+              <motion.line
+                x1={cx} y1={cy - 8} x2={cx} y2={cy + 8}
+                stroke="rgba(255,215,0,0.7)" strokeWidth="1"
+                animate={{ opacity: [0, 0.8, 0], scaleY: [0.5, 1, 0.5] }}
+                transition={{ duration: 2 + Math.random(), repeat: Infinity, delay: Math.random() * 2 }}
+              />
+            </motion.g>
           ))}
+        </motion.svg>
+
+        {/* ── Rotating 3D Scene ────────────────────────────────────────────── */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-center"
+          style={{
+            rotateX,
+            rotateY,
+            transformStyle: 'preserve-3d',
+          }}
+        >
+          {photos.map((photo, index) => {
+            const isHovered = hoveredId === photo.id;
+            const isOtherHovered = hoveredId !== null && !isHovered;
+
+            return (
+              <motion.div
+                key={photo.id}
+                initial={{ opacity: 0, scale: 0.5, z: photo.z - 60 }}
+                animate={isEntered ? {
+                  opacity: 1,
+                  scale: 1,
+                  z: photo.z,
+                  transition: {
+                    delay: 0.15 + index * 0.1,
+                    type: 'spring',
+                    stiffness: 90,
+                    damping: 16,
+                  },
+                } : {}}
+                whileHover={{
+                  scale: 1.18,
+                  rotate: 0,
+                  z: photo.z + 90,
+                  transition: { type: 'spring', stiffness: 250, damping: 20 },
+                }}
+                onHoverStart={() => setHoveredId(photo.id)}
+                onHoverEnd={() => setHoveredId(null)}
+                className="absolute cursor-pointer"
+                style={{
+                  x: photo.x,
+                  y: photo.y,
+                  rotate: photo.tilt,
+                  zIndex: isHovered ? 100 : isOtherHovered ? 1 : 10 + index,
+                  transformStyle: 'preserve-3d',
+                  opacity: isOtherHovered ? 0.55 : 1,
+                  transition: 'opacity 0.3s ease',
+                }}
+              >
+                {/* ── Polaroid Frame ──────────────────────────────────────── */}
+                <div
+                  className="relative bg-white rounded-sm"
+                  style={{
+                    padding: '10px',
+                    paddingBottom: '40px',
+                    width: 'clamp(112px, 14vw, 152px)',
+                    // Warmer, richer shadow with a faint rose-gold ambient glow
+                    boxShadow: isHovered
+                      ? '0 0 0 1.5px rgba(255,182,193,0.5), 0 24px 64px rgba(0,0,0,0.6), 0 0 40px rgba(255,182,193,0.22), 0 0 20px rgba(200,150,102,0.2)'
+                      : '0 6px 18px rgba(0,0,0,0.5), 0 2px 6px rgba(163,112,76,0.2)',
+                    transition: 'box-shadow 0.35s ease',
+                  }}
+                >
+                  {/* Photo */}
+                  <div
+                    className="overflow-hidden bg-gray-200"
+                    style={{ aspectRatio: '1 / 1', width: '100%' }}
+                  >
+                    <motion.img
+                      src={photo.imageUrl}
+                      alt={photo.caption}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      animate={{ scale: isHovered ? 1.07 : 1 }}
+                      transition={{ duration: 0.4 }}
+                    />
+                  </div>
+
+                  {/* Caption */}
+                  <p
+                    className="font-serif text-center italic text-gray-600"
+                    style={{ fontSize: 'clamp(9px, 1.1vw, 12px)', marginTop: '8px' }}
+                  >
+                    {photo.caption}
+                  </p>
+
+                  {/* Rose-gold inner glow on hover */}
+                  {isHovered && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 pointer-events-none rounded-sm"
+                      style={{
+                        background:
+                          'linear-gradient(135deg, rgba(255,182,193,0.14) 0%, rgba(200,150,102,0.1) 100%)',
+                      }}
+                    />
+                  )}
+                </div>
+
+                {/* Heart pin dot */}
+                <div
+                  className="absolute left-1/2 -top-2 -translate-x-1/2 w-3 h-3 rounded-full"
+                  style={{
+                    background: 'radial-gradient(circle, #ffb6c1, #a3704c)',
+                    boxShadow: '0 0 6px rgba(255,182,193,0.7), 0 2px 6px rgba(0,0,0,0.4)',
+                  }}
+                />
+              </motion.div>
+            );
+          })}
         </motion.div>
-      </div>
+      </motion.div>
+
+      {/* ── Navigation Button ────────────────────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.4, duration: 0.7 }}
+        className="mt-8 sm:mt-10 z-10"
+      >
+        <button
+          onClick={onNext}
+          className="group flex items-center gap-2.5 min-h-[44px] px-7 sm:px-8 py-3 rounded-full bg-gradient-to-r from-theme-brownMedium/20 to-theme-blueMedium/20 border border-theme-brownMedium/30 hover:border-theme-blueMedium/60 transition-all duration-300 text-theme-brownLight hover:text-white cursor-pointer shadow-md text-xs tracking-wider uppercase font-semibold"
+        >
+          Lanjutkan Kisah Kita
+          <ChevronRight
+            size={14}
+            className="group-hover:translate-x-1 transition-transform duration-300"
+          />
+        </button>
+      </motion.div>
     </section>
   );
 };

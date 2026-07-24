@@ -79,15 +79,15 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
   );
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent overflow-hidden">
+    <section className="relative min-h-screen flex flex-col justify-center items-center px-3 sm:px-6 py-12 sm:py-16 bg-transparent overflow-x-hidden">
       {/* Decorative Glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-theme-brownDark/5 rounded-full blur-[130px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 sm:w-[400px] md:w-[600px] h-64 sm:h-[400px] md:h-[600px] bg-theme-brownDark/5 rounded-full blur-[130px] pointer-events-none" />
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-4 items-center z-10"
+        className="w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-4 items-center z-10"
       >
         {/* LEFT COLUMN: 4 Aesthetic Polaroids (Stacked/Scattered vertically) */}
         <div className="hidden lg:flex flex-col gap-6 items-center col-span-1 justify-center">
@@ -98,7 +98,7 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
         <div className="col-span-1 lg:col-span-2 flex flex-col items-center justify-center px-2 md:px-4">
           <motion.div
             variants={itemVariants}
-            className="w-full bg-[#1e1a18]/65 border border-theme-brownDark/25 rounded-3xl p-6 md:p-10 backdrop-blur-md shadow-2xl text-center relative"
+            className="w-full bg-[#1e1a18]/65 border border-theme-brownDark/25 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 backdrop-blur-md shadow-2xl text-center relative"
           >
             {/* Heart Icon header */}
             <div className="flex justify-center mb-6">
@@ -108,7 +108,7 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
             </div>
 
             {/* Letter Title */}
-            <h2 className="font-serif text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-theme-brownLight via-theme-brownMedium to-theme-blueLight font-medium tracking-wide mb-6">
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-theme-brownLight via-theme-brownMedium to-theme-blueLight font-medium tracking-wide mb-5 sm:mb-6">
               Your Special Day
             </h2>
 
@@ -139,7 +139,7 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
             <div className="mt-8 flex justify-center">
               <button
                 onClick={onNext}
-                className="group flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-theme-brownMedium/20 to-theme-blueMedium/20 border border-theme-brownMedium/30 hover:border-theme-blueMedium/60 transition-all duration-300 text-theme-brownLight hover:text-white cursor-pointer shadow-md text-xs tracking-wider uppercase font-semibold"
+                className="group flex items-center gap-2 min-h-[44px] px-6 sm:px-8 py-2.5 rounded-full bg-gradient-to-r from-theme-brownMedium/20 to-theme-blueMedium/20 border border-theme-brownMedium/30 hover:border-theme-blueMedium/60 transition-all duration-300 text-theme-brownLight hover:text-white cursor-pointer shadow-md text-xs tracking-wider uppercase font-semibold"
               >
                 Lanjutkan
                 <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />

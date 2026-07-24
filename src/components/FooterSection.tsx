@@ -4,17 +4,17 @@ import { useAudio } from '../context/AudioContext';
 import { Heart } from 'lucide-react';
 
 export const FooterSection: React.FC = () => {
-  const { fadeMusic, isPlaying } = useAudio();
+  const { pauseMusic, isPlaying } = useAudio();
 
   useEffect(() => {
     if (isPlaying) {
-      // Smoothly fade out music to 0 volume over 3 seconds when the closing page mounts
-      fadeMusic(0, 3000);
+      // Smoothly fade out and pause music when the closing page mounts
+      pauseMusic();
     }
-  }, [isPlaying, fadeMusic]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center bg-transparent px-4 overflow-hidden">
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center bg-transparent px-4 sm:px-8 py-12 overflow-hidden">
       {/* Decorative Glow */}
       <div className="absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-1/2 w-96 h-96 bg-theme-brownDark/10 rounded-full blur-[100px] pointer-events-none"></div>
 
@@ -34,12 +34,12 @@ export const FooterSection: React.FC = () => {
         </motion.div>
 
         {/* Serif Quote */}
-        <h3 className="font-serif text-4xl md:text-5xl text-theme-brownLight tracking-widest font-light italic leading-tight">
+        <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl text-theme-brownLight tracking-widest font-light italic leading-tight">
           Always & Forever
         </h3>
 
         {/* Small subtext */}
-        <p className="font-sans text-xs md:text-sm text-theme-blueLight/60 tracking-[0.2em] uppercase font-light max-w-xs leading-relaxed mt-2">
+        <p className="font-sans text-xs sm:text-sm text-theme-blueLight/60 tracking-[0.15em] sm:tracking-[0.2em] uppercase font-light max-w-[260px] sm:max-w-xs leading-relaxed mt-2">
           Terima kasih telah menjadi bagian dari kebahagiaan ini.
         </p>
 
