@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-theme-bgDark text-theme-brownLight overflow-x-hidden font-sans;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(79, 124, 172, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(163, 112, 76, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+  }
+}
+
+/* Custom scrollbar for premium touch */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #12100e;
+}
+::-webkit-scrollbar-thumb {
+  background: #a3704c;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4f7cac;
+}
+
+/* Swiper pagination customizations */
+.swiper-pagination {
+  position: relative !important;
+  margin-top: 1.5rem;
+}
+.swiper-pagination-bullet {
+  background: #a3704c !important;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  width: 8px;
+  height: 8px;
+}
+.swiper-pagination-bullet-active {
+  background: #4f7cac !important;
+  width: 24px !important;
+  border-radius: 4px !important;
+  opacity: 1 !important;
+}
+
+/* Custom styles for polaroid images */
+.polaroid-card {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Custom audio wave animation */
+.wave-bar {
+  display: inline-block;
+  width: 3px;
+  height: 15px;
+  background-color: #4f7cac;
+  margin: 0 1px;
+  animation: bounce-wave 1s ease-in-out infinite alternate;
+}
+.wave-bar:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.wave-bar:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce-wave {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1); }
+}
