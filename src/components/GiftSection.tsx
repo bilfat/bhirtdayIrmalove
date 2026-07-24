@@ -21,7 +21,7 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
     // 2. Play theme music
     playMusic();
 
-    // 3. Trigger the dense flower petals burst
+    // 3. Trigger the dense, fast flower petals burst
     triggerFlowerConfetti();
 
     // 4. Auto-advance to the letter page after 5.5s (ample time to see the lid opening and the greeting text)
@@ -31,36 +31,73 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
   };
 
   return (
-    <section className="relative min-h-screen flex flex-col justify-center items-center px-4 py-16 bg-transparent overflow-hidden">
+    <section className="relative min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-transparent overflow-hidden">
       {/* Background glow — responsive size */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-[500px] h-72 sm:h-[500px] bg-theme-blueMedium/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Container */}
-      <div className="max-w-xl text-center z-10 flex flex-col items-center">
-        {/* Header Block — hides slightly when box opens to give space for greeting */}
-        <motion.div
-          animate={isOpened ? { opacity: 0.35, scale: 0.95 } : { opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="flex flex-col items-center mb-6 sm:mb-8"
-        >
-          <span className="text-xs font-sans tracking-[0.25em] uppercase text-theme-blueLight font-semibold flex items-center gap-1.5 mb-3">
-            <Gift size={14} className="text-theme-brownMedium" />
-            Sebuah Kejutan Kecil
-          </span>
-          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-theme-brownLight font-light mb-4">
-            Ada sesuatu yang khusus dibuat untukmu
-          </h2>
-          <p className="font-sans text-xs sm:text-sm text-theme-blueLight/60 tracking-wider max-w-xs sm:max-w-sm">
-            Klik kado di bawah ini untuk membuka kejutan indah yang menunggumu di dalam.
-          </p>
-        </motion.div>
+      <div className="max-w-2xl w-full text-center z-10 flex flex-col items-center">
+        
+        {/* ── Conditional Header vs Greeting Reveal ────────────────────────── */}
+        <div className="min-h-[140px] sm:min-h-[180px] w-full flex items-center justify-center mb-4 sm:mb-6">
+          <AnimatePresence mode="wait">
+            {!isOpened ? (
+              <motion.div
+                key="header"
+                initial={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                transition={{ duration: 0.4 }}
+                className="flex flex-col items-center"
+              >
+                <span className="text-xs font-sans tracking-[0.25em] uppercase text-theme-blueLight font-semibold flex items-center gap-1.5 mb-3">
+                  <Gift size={14} className="text-theme-brownMedium" />
+                  Sebuah Kejutan Kecil
+                </span>
+                <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-theme-brownLight font-light mb-4">
+                  Ada sesuatu yang khusus dibuat untukmu
+                </h2>
+                <p className="font-sans text-xs sm:text-sm text-theme-blueLight/60 tracking-wider max-w-xs sm:max-w-sm">
+                  Klik kado di bawah ini untuk membuka kejutan indah yang menunggumu di dalam.
+                </p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="greeting"
+                initial={{ opacity: 0, scale: 0.3, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                transition={{ type: 'spring', stiffness: 100, damping: 12 }}
+                className="flex flex-col items-center select-none"
+              >
+                {/* Gold Sparkle Icon top */}
+                <motion.div
+                  animate={{ scale: [1, 1.25, 1], rotate: [0, 180, 360] }}
+                  transition={{ repeat: Infinity, duration: 4 }}
+                  className="text-theme-brownLight mb-3"
+                >
+                  <Sparkles size={24} className="drop-shadow-[0_0_10px_rgba(255,182,193,0.85)]" />
+                </motion.div>
 
-        {/* ── Gift Box & Reveal Wrapper ────────────────────────────────────── */}
-        <div className="relative w-72 h-72 sm:w-80 sm:h-80 flex justify-center items-center mb-6 sm:mb-8 select-none">
-          
+                {/* Main Birthday Greeting — Large, elegant cursive styling with drop shadow */}
+                <h3
+                  className="font-serif italic font-bold text-3xl sm:text-5xl md:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-theme-brownLight via-theme-brownMedium to-[#ffb6c1] leading-tight"
+                  style={{
+                    filter: 'drop-shadow(0 0 25px rgba(255, 182, 193, 0.75)) drop-shadow(0 3px 6px rgba(0,0,0,0.95))',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  HAPPY BIRTHDAY <br /> IMAAA CANTIKKK ❤️
+                </h3>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* ── Gift Box Wrapper ────────────────────────────────────────────── */}
+        <div className="relative w-48 h-48 sm:w-60 sm:h-60 flex justify-center items-center mb-8 select-none">
           {/* 3D-like Box SVG */}
           <div
-            className="w-48 h-48 sm:w-60 sm:h-60 flex justify-center items-center cursor-pointer relative z-10"
+            className="w-full h-full flex justify-center items-center cursor-pointer relative z-10"
             onClick={handleOpenGift}
           >
             <svg
@@ -124,43 +161,6 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
               <span className="absolute inset-0 scale-[1.25] border border-theme-brownMedium/20 rounded-full animate-ping pointer-events-none opacity-20" />
             )}
           </div>
-
-          {/* ── Pop-up Greeting Text reveal ─────────────────────────────────── */}
-          <AnimatePresence>
-            {isOpened && (
-              <motion.div
-                initial={{ scale: 0, opacity: 0, y: 70 }}
-                animate={{ scale: 1, opacity: 1, y: -45 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{
-                  delay: 0.55,
-                  type: 'spring',
-                  stiffness: 95,
-                  damping: 13
-                }}
-                className="absolute z-20 w-[95%] pointer-events-none text-center flex flex-col items-center gap-1.5"
-              >
-                {/* Gold Sparkle Icon top */}
-                <motion.div
-                  animate={{ scale: [1, 1.25, 1], rotate: [0, 180, 360] }}
-                  transition={{ repeat: Infinity, duration: 4 }}
-                  className="text-theme-brownLight"
-                >
-                  <Sparkles size={20} className="drop-shadow-[0_0_8px_rgba(255,182,193,0.8)]" />
-                </motion.div>
-                
-                <h3
-                  className="font-serif italic font-bold text-xl sm:text-2xl md:text-3xl leading-tight text-transparent bg-clip-text bg-gradient-to-r from-theme-brownLight via-theme-brownMedium to-[#ffb6c1]"
-                  style={{
-                    filter: 'drop-shadow(0 0 15px rgba(255, 182, 193, 0.7)) drop-shadow(0 2px 4px rgba(0,0,0,0.85))',
-                    letterSpacing: '0.04em'
-                  }}
-                >
-                  HAPPY BIRTHDAY <br /> IMAAA CANTIKKK
-                </h3>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* CTA Button */}

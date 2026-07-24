@@ -551,35 +551,43 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
               <motion.div
                 key={photo.id}
                 initial={{ opacity: 0, scale: 0.5, z: photo.z - 60 }}
-                animate={isEntered ? {
-                  opacity: 1,
-                  scale: 1,
-                  z: photo.z,
-                  transition: {
-                    delay: 0.15 + index * 0.1,
-                    type: 'spring',
-                    stiffness: 90,
-                    damping: 16,
-                  },
-                } : {}}
-                whileHover={{
+                // Drive the scale, rotation, and 3D depth directly from active/hover/stagger states
+                animate={
+                  isEntered
+                    ? activeId === photo.id
+                      ? {
+                          opacity: 1,
+                          scale: 1.25,
+                          rotate: 0,
+                          z: photo.z + 120,
+                          transition: { type: 'spring', stiffness: 200, damping: 22 }
+                        }
+                      : {
+                          opacity: isOtherHovered || (activeId !== null && activeId !== photo.id) ? 0.45 : 1,
+                          scale: 1,
+                          rotate: photo.tilt,
+                          z: photo.z,
+                          transition: { type: 'spring', stiffness: 120, damping: 20 }
+                        }
+                    : { opacity: 0, scale: 0.5, z: photo.z - 60 }
+                }
+                whileHover={activeId !== photo.id ? {
                   scale: 1.18,
                   rotate: 0,
                   z: photo.z + 90,
                   transition: { type: 'spring', stiffness: 250, damping: 20 },
-                }}
+                } : {}}
                 onHoverStart={() => setHoveredId(photo.id)}
                 onHoverEnd={() => setHoveredId(null)}
-                onClick={() => setActiveId(prev => prev === photo.id ? null : photo.id)}
+                // onTap filters out swiping gestures, ensuring tap only fires on release without drag displacement
+                onTap={() => setActiveId(prev => prev === photo.id ? null : photo.id)}
                 className="absolute cursor-pointer"
                 style={{
                   x: photo.x,
                   y: photo.y,
-                  rotate: photo.tilt,
                   // Priority: activeId (click) > hoveredId (mouse) > default stack
                   zIndex: activeId === photo.id ? 200 : isHovered ? 100 : isOtherHovered ? 1 : 10 + index,
                   transformStyle: 'preserve-3d',
-                  opacity: isOtherHovered && activeId !== photo.id ? 0.45 : 1,
                   transition: 'opacity 0.3s ease',
                 }}
               >
@@ -590,8 +598,8 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
                     padding: '10px',
                     paddingBottom: '14px',
                     width: 'clamp(112px, 14vw, 152px)',
-                    // Warmer, richer shadow with a faint rose-gold ambient glow
-                    boxShadow: isHovered
+                    // Warmer, richer shadow with a faint rose-gold ambient glow on hover or selection
+                    boxShadow: (isHovered || activeId === photo.id)
                       ? '0 0 0 1.5px rgba(255,182,193,0.5), 0 24px 64px rgba(0,0,0,0.6), 0 0 40px rgba(255,182,193,0.22), 0 0 20px rgba(200,150,102,0.2)'
                       : '0 6px 18px rgba(0,0,0,0.5), 0 2px 6px rgba(163,112,76,0.2)',
                     transition: 'box-shadow 0.35s ease',

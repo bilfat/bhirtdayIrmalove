@@ -15,32 +15,34 @@ export const triggerFlowerConfetti = () => {
 
   // 4. Double frame loop to fire dense particles from both sides
   (function frame() {
-    // Left burst — denser particles (count increased to 12)
+    // Left burst — denser particles, faster speed (startVelocity & gravity increased)
     confetti({
-      particleCount: 12,
+      particleCount: 10,
       angle: 60,
-      spread: 75,
-      origin: { x: 0, y: 0.8 },
+      spread: 80,
+      origin: { x: 0, y: 0.75 },
       colors: colors,
       shapes: [petalShape],
       scalar: 1.4,
-      ticks: 350,
-      gravity: 0.75,
-      drift: 0.5,
+      startVelocity: 60,   // Blasts out faster (default is 45)
+      gravity: 1.35,       // Falls quicker (default is 1.0)
+      ticks: 220,          // Quicker fadeout to match higher velocity
+      drift: 0.6,
     });
 
-    // Right burst — denser particles (count increased to 12)
+    // Right burst — denser particles, faster speed (startVelocity & gravity increased)
     confetti({
-      particleCount: 12,
+      particleCount: 10,
       angle: 120,
-      spread: 75,
-      origin: { x: 1, y: 0.8 },
+      spread: 80,
+      origin: { x: 1, y: 0.75 },
       colors: colors,
       shapes: [petalShape],
       scalar: 1.4,
-      ticks: 350,
-      gravity: 0.75,
-      drift: -0.5,
+      startVelocity: 60,   // Blasts out faster
+      gravity: 1.35,       // Falls quicker
+      ticks: 220,          // Quicker fadeout to match higher velocity
+      drift: -0.6,
     });
 
     // Central splash occasionally for added density
@@ -48,13 +50,14 @@ export const triggerFlowerConfetti = () => {
       confetti({
         particleCount: 8,
         angle: 90,
-        spread: 90,
-        origin: { x: 0.5, y: 0.6 },
+        spread: 100,
+        origin: { x: 0.5, y: 0.55 },
         colors: colors,
         shapes: [petalShape],
-        scalar: 1.2,
-        ticks: 300,
-        gravity: 0.8,
+        scalar: 1.25,
+        startVelocity: 45,
+        gravity: 1.4,
+        ticks: 180,
       });
     }
 
