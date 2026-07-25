@@ -11,7 +11,7 @@ interface HeroSectionProps {
 // Format: new Date('YYYY-MM-DDTHH:MM:SS') — use local time of the recipient.
 // Example: new Date('2025-08-15T00:00:00') → unlocks on 15 August 2025 at midnight.
 // ─────────────────────────────────────────────────────────────────────────────
-const TARGET_DATE = new Date('2026-06-26T00:00:00');
+const TARGET_DATE = new Date('2026-07-29T00:00:00');
 
 interface TimeLeft {
   days: number;
