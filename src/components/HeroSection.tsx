@@ -90,10 +90,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
           transition={{ duration: 1.2, delay: 0.2 }}
           className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-wide text-theme-brownLight leading-tight"
         >
-          Hari Istimewanya{' '}
+          Halooo Irmaaa{' '}
           <br className="hidden sm:block" />
           <span className="font-semibold italic text-transparent bg-clip-text bg-gradient-to-r from-theme-brownLight via-theme-brownMedium to-theme-blueLight">
-            {isLocked ? 'Segera Tiba' : 'Telah Tiba'}
+            {isLocked ? 'Segera Tiba' : ''}
           </span>
         </motion.h1>
 
@@ -105,7 +105,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
         >
           {isLocked
             ? 'Waktu terus berjalan menuju perayaan momen yang sangat berharga. Bersiaplah untuk sebuah perjalanan kecil.'
-            : 'Hari istimewamu telah tiba. Saatnya memulai perjalanan kecil yang sudah disiapkan untukmu.'}
+            : 'Aku sudah menyiapkan sesuatu special buat kamu wlee.'}
         </motion.p>
 
         {/* Countdown Grid — 2×2 on mobile, 4×1 on md+ */}
@@ -161,7 +161,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
                 className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase font-sans text-theme-blueLight/40"
               >
                 <Lock size={10} className="text-theme-brownMedium/60" />
-                Perjalanan terkunci hingga harinya tiba
+                Tapii Belum waktunya dibuka. Nanti pas countdown selesai baru boleh dibukaa yaaa
               </motion.span>
             ) : (
               <motion.span
@@ -172,7 +172,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
                 className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase font-sans text-theme-blueLight/70"
               >
                 <Unlock size={10} className="text-theme-brownLight/80" />
-                Perjalananmu telah terbuka
+                Udahh bisaaa dibukaaa irmaaa
               </motion.span>
             )}
           </AnimatePresence>
@@ -195,7 +195,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
           >
             <span className="relative z-10 font-sans text-xs tracking-[0.2em] uppercase font-semibold text-theme-brownLight/60 flex items-center gap-2">
               <Lock size={11} />
-              Mulai Perjalanan
+              dikunci, ga bisaa di bukaa wkwkwk
             </span>
           </button>
         ) : (
@@ -211,7 +211,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
             <div className="absolute inset-0 w-0 bg-gradient-to-r from-theme-brownMedium/20 to-theme-blueMedium/20 transition-all duration-500 ease-out group-hover:w-full" />
             <span className="relative z-10 font-sans text-xs tracking-[0.2em] uppercase font-semibold text-theme-brownLight transition-colors duration-300 group-hover:text-white flex items-center gap-2">
               <Unlock size={11} className="opacity-70" />
-              Mulai Perjalanan
+              ayooo bukaa sekaranggg imaaa
             </span>
           </motion.button>
         )}

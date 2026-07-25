@@ -51,13 +51,13 @@ export const GiftSection: React.FC<GiftSectionProps> = ({ onNext }) => {
               >
                 <span className="text-xs font-sans tracking-[0.25em] uppercase text-theme-blueLight font-semibold flex items-center gap-1.5 mb-3">
                   <Gift size={14} className="text-theme-brownMedium" />
-                  Sebuah Kejutan Kecil
+                🚨WARNINGGG!!!🚨
                 </span>
                 <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-theme-brownLight font-light mb-4">
-                  Ada sesuatu yang khusus dibuat untukmu
+                  Mengandung kadarr gemess
                 </h2>
                 <p className="font-sans text-xs sm:text-sm text-theme-blueLight/60 tracking-wider max-w-xs sm:max-w-sm">
-                  Klik kado di bawah ini untuk membuka kejutan indah yang menunggumu di dalam.
+                  Efek samping setelah dibuka kemungkinan bikin senyum-senyum sendiri.
                 </p>
               </motion.div>
             ) : (

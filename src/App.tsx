@@ -126,7 +126,7 @@ const MainContent: React.FC = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="w-full min-h-screen flex items-center justify-center absolute inset-0"
+            className="w-full min-h-screen flex items-center justify-center relative"
           >
             <HeroSection onNext={handleNext} />
           </motion.div>
@@ -139,7 +139,7 @@ const MainContent: React.FC = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="w-full min-h-screen flex items-center justify-center absolute inset-0"
+            className="w-full min-h-screen flex items-center justify-center relative"
           >
             <GiftSection onNext={handleNext} />
           </motion.div>
@@ -152,7 +152,7 @@ const MainContent: React.FC = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="w-full min-h-screen flex items-center justify-center absolute inset-0"
+            className="w-full min-h-screen flex items-center justify-center relative"
           >
             <LetterSection onNext={handleNext} />
           </motion.div>
@@ -165,7 +165,7 @@ const MainContent: React.FC = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="w-full min-h-screen flex items-center justify-center absolute inset-0"
+            className="w-full min-h-screen flex items-center justify-center relative"
           >
             <VideoSection onNext={handleNext} />
           </motion.div>
@@ -178,7 +178,7 @@ const MainContent: React.FC = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="w-full min-h-screen flex items-center justify-center absolute inset-0"
+            className="w-full min-h-screen flex items-center justify-center relative"
           >
             <GallerySection onNext={handleNext} />
           </motion.div>
@@ -191,7 +191,7 @@ const MainContent: React.FC = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            className="w-full min-h-screen flex items-center justify-center absolute inset-0"
+            className="w-full min-h-screen flex items-center justify-center relative"
           >
             <FooterSection />
           </motion.div>

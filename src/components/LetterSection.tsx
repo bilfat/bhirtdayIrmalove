@@ -130,7 +130,7 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
         <div className="col-span-1 lg:col-span-2 flex flex-col items-center justify-center px-2 md:px-4">
           <motion.div
             variants={itemVariants}
-            className="w-full bg-[#1e1a18]/75 border border-theme-brownMedium/30 rounded-2xl sm:rounded-3xl p-6 sm:p-9 md:p-12 backdrop-blur-md text-center relative overflow-visible"
+            className="w-full bg-[#1e1a18]/75 border border-theme-brownMedium/30 rounded-2xl sm:rounded-3xl p-5 sm:p-9 md:p-12 backdrop-blur-md text-center relative overflow-visible"
             style={{
               boxShadow: '0 20px 50px rgba(0, 0, 0, 0.65), 0 0 35px rgba(255, 182, 193, 0.12), inset 0 0 20px rgba(255, 182, 193, 0.05)',
             }}
@@ -173,9 +173,9 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
             </motion.div>
 
             {/* ── Card Header ───────────────────────────────────────────────── */}
-            <div className="flex flex-col items-center justify-center mb-6">
+            <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
               {/* Overlapping Heart Accent Icon Header */}
-              <div className="relative flex justify-center items-center mb-4">
+              <div className="relative flex justify-center items-center mb-3 sm:mb-4">
                 {/* Outlying glowing ring */}
                 <span className="absolute inset-0 scale-[1.5] border border-theme-brownMedium/20 rounded-full animate-ping pointer-events-none opacity-20" />
                 
@@ -207,7 +207,7 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
               </h2>
 
               {/* Aesthetic Divider Line with Center Dot */}
-              <div className="flex items-center gap-2 mt-3 w-40 justify-center">
+              <div className="flex items-center gap-2 mt-2 sm:mt-3 w-40 justify-center">
                 <span className="h-[1px] w-full bg-gradient-to-r from-transparent to-theme-brownMedium/40" />
                 <Heart size={10} className="text-theme-brownMedium/80 fill-theme-brownMedium/50 animate-pulse shrink-0" />
                 <span className="h-[1px] w-full bg-gradient-to-l from-transparent to-theme-brownMedium/40" />
@@ -215,30 +215,30 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
             </div>
 
             {/* Letter Content */}
-            <div className="font-serif text-sm md:text-base text-theme-brownLight/90 leading-loose space-y-5 italic font-light max-w-md mx-auto relative z-10">
+            <div className="font-serif text-xs sm:text-sm md:text-base text-theme-brownLight/90 leading-relaxed sm:leading-loose space-y-3.5 sm:space-y-5 italic font-light max-w-md mx-auto relative z-10">
               <p>
-                Di hari yang sangat indah ini, semesta bersorak merayakan kehadiranmu di dunia. Kamu adalah berkah yang menjelma, membawa kehangatan di setiap sudut hari yang kulewati.
+               Di usia yang ke-21 ini, selamat bertambah umur yaa. 🥳🤍 Semoga selalu diberikan kesehatan, umur yang panjang, kebahagiaan, dan semoga setiap harimu dipenuhi dengan senyuman manis khas kamu. Jangan sering-sering badmood yaa, semoga lebih banyak hal baik yang datang menghampiri.
               </p>
               <p>
-                Terima kasih telah menjadi alasan di balik begitu banyak senyum, telah mengajarkan arti ketulusan melalui kebaikan hatimu, dan telah menjadi pelindung yang meneduhkan di kala badai datang menerpa.
+                Semoga kamu selalu menjadi anak yang berbakti dan membanggakan kedua orang tua. Semoga setiap doa yang kamu panjatkan dikabulkan, rezekimu semakin lancar, segala urusan dimudahkan, dan semua cita-cita yang kamu perjuangkan bisa tercapai satu per satu. Jangan pernah takut untuk mencoba hal-hal baru, karena aku yakin kamu jauh lebih hebat dari yang kamu kira.
               </p>
               <p>
-                Semoga seiring bertambahnya usia, langkah kakimu selalu dituntun oleh kebahagiaan, mimpimu didekatkan oleh kemudahan, dan hatimu senantiasa dipenuhi kedamaian yang tak pernah pudar.
+                Terakhir, semoga kamu selalu dikelilingi oleh orang-orang yang tulus menyayangimu. Tetap jadi Irma yang baik, kuat, dan selalu membawa energi positif ke mana pun kamu pergi. Semoga usia 21 ini menjadi awal dari banyak cerita indah dan pencapaian baru.
               </p>
             </div>
 
             {/* Signature */}
-            <div className="mt-8 pt-5 border-t border-theme-brownMedium/15 text-center font-sans relative z-10">
+            <div className="mt-6 sm:mt-8 pt-4 sm:pt-5 border-t border-theme-brownMedium/15 text-center font-sans relative z-10">
               <span className="text-[10px] tracking-[0.25em] uppercase text-theme-blueLight/50 font-semibold block mb-1">
-                Ditulis dengan penuh rasa sayang
+                Semoga tahun ini menjadi salah satu tahun terbaik dalam hidupmu.
               </span>
               <span className="font-serif italic text-base text-theme-brownMedium font-medium">
-                Seseorang yang mengagumimu
+                Happy 21st Birthday! 🎉🤍
               </span>
             </div>
 
             {/* Next Step Button inside Letter Card */}
-            <div className="mt-8 flex justify-center relative z-10">
+            <div className="mt-6 sm:mt-8 flex justify-center relative z-10">
               <button
                 onClick={onNext}
                 className="group flex items-center gap-2 min-h-[44px] px-6 sm:px-8 py-2.5 rounded-full bg-gradient-to-r from-theme-brownMedium/20 to-theme-blueMedium/20 border border-theme-brownMedium/30 hover:border-theme-blueMedium/60 transition-all duration-300 text-theme-brownLight hover:text-white cursor-pointer shadow-md text-xs tracking-wider uppercase font-semibold"
