@@ -3,11 +3,16 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination } from 'swiper/modules';
 import { motion } from 'framer-motion';
 import { useAudio } from '../context/AudioContext';
-import { Video, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
+
+// Import local video assets
+import vid1 from '../assets/vidio/1.mp4';
+import vid2 from '../assets/vidio/2.mp4';
+import vid3 from '../assets/vidio/3.mp4';
 
 interface VideoData {
   id: number;
@@ -27,21 +32,21 @@ export const VideoSection: React.FC<VideoSectionProps> = ({ onNext }) => {
   const videos: VideoData[] = [
     {
       id: 1,
-      url: 'https://assets.mixkit.co/videos/preview/mixkit-holding-a-burning-sparkler-close-up-4007-large.mp4',
-      title: 'Harapan Kecil',
-      caption: 'Menyalakan asa di hari yang penuh kegembiraan ini.',
+      url: vid1,
+      title: 'awal banget ini mah',
+      caption: 'waktu ak masih usil, dan kamu caper wkwkw.',
     },
     {
       id: 2,
-      url: 'https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4',
-      title: 'Tenang & Teduh',
-      caption: 'Seperti air mengalir, begitulah damai membimbing langkahmu.',
+      url: vid2,
+      title: 'menengah',
+      caption: 'udah sering banget bareng.',
     },
     {
       id: 3,
-      url: 'https://assets.mixkit.co/videos/preview/mixkit-waves-crashing-on-rocks-from-above-4613-large.mp4',
-      title: 'Luas & Indah',
-      caption: 'Harapan dan cita-citamu seluas samudera yang membentang.',
+      url: vid3,
+      title: 'gatau ini',
+      caption: 'liat aja lah vidionya',
     },
   ];
 
@@ -88,15 +93,12 @@ export const VideoSection: React.FC<VideoSectionProps> = ({ onNext }) => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16 flex flex-col items-center"
         >
-          <span className="text-xs font-sans tracking-[0.25em] uppercase text-theme-blueLight font-semibold flex items-center gap-1.5 mb-3">
-            <Video size={14} className="text-theme-brownMedium" />
-            Momen Untukmu
-          </span>
+       
           <h2 className="font-serif text-3xl md:text-5xl text-theme-brownLight font-light tracking-wide">
-            Sebuah Pesan Singkat
+            A Moment For You
           </h2>
           <p className="font-sans text-xs md:text-sm text-theme-blueLight/60 tracking-wider max-w-md mt-4">
-            Klik tombol putar pada video di bawah ini untuk melihat pesan sinematik kecil. Musik latar akan meredup otomatis.
+           Mungkin sedikit moment dari awal banget
           </p>
         </motion.div>
 

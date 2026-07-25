@@ -6,7 +6,7 @@ import {
   useTransform,
   animate,
 } from 'framer-motion';
-import { Heart, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 // ─── Local image imports (src/assets/berdua/) ────────────────────────────────
 // 3D heart gallery — 7 foreground frames
@@ -376,15 +376,12 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ onNext }) => {
         transition={{ duration: 0.9, delay: 0.1 }}
         className="text-center z-10 mb-6"
       >
-        <span className="flex justify-center items-center gap-2 font-sans text-[10px] md:text-xs tracking-[0.25em] uppercase text-theme-blueLight/70 mb-2">
-          <Heart size={12} className="fill-theme-brownMedium/60 text-theme-brownMedium/60" />
-          Kenangan Kita
-        </span>
+        
         <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl text-theme-brownLight font-light">
-          Momen Foto Bersama Lucu
+          Our Memories
         </h2>
         <p className="font-sans text-[10px] sm:text-[11px] text-theme-blueLight/40 tracking-widest mt-2 uppercase">
-          Geser untuk memutar • Sentuh foto untuk memperbesar
+          sedikit foto foto lucu kita berdua 🤍
         </p>
       </motion.div>
 

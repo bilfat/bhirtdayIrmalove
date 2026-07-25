@@ -35,12 +35,12 @@ export const FooterSection: React.FC = () => {
 
         {/* Serif Quote */}
         <h3 className="font-serif text-3xl sm:text-4xl md:text-5xl text-theme-brownLight tracking-widest font-light italic leading-tight">
-          Always & Forever
+          One Last Wish
         </h3>
 
         {/* Small subtext */}
         <p className="font-sans text-xs sm:text-sm text-theme-blueLight/60 tracking-[0.15em] sm:tracking-[0.2em] uppercase font-light max-w-[260px] sm:max-w-xs leading-relaxed mt-2">
-          Terima kasih telah menjadi bagian dari kebahagiaan ini.
+          Makasih ya, Irma, udah hadir di hidup aku. Semoga kita tetap bisa jadi teman yang saling dukung, sama-sama belajar, sama-sama berkembang, dan semoga semua yang kita impikan bisa tercapai.
         </p>
 
         {/* Separator line */}
