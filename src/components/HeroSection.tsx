@@ -31,8 +31,8 @@ const calcTimeLeft = (): { timeLeft: TimeLeft; isLocked: boolean } => {
 
   return {
     timeLeft: {
-      days:    Math.floor(difference / (1000 * 60 * 60 * 24)),
-      hours:   Math.floor((difference / (1000 * 60 * 60)) % 24),
+      days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((difference / (1000 * 60)) % 60),
       seconds: Math.floor((difference / 1000) % 60),
     },
@@ -59,8 +59,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
   }, [isLocked]);
 
   const timeUnits = [
-    { label: 'Hari',  value: timeLeft.days },
-    { label: 'Jam',   value: timeLeft.hours },
+    { label: 'Hari', value: timeLeft.days },
+    { label: 'Jam', value: timeLeft.hours },
     { label: 'Menit', value: timeLeft.minutes },
     { label: 'Detik', value: timeLeft.seconds },
   ];
@@ -79,7 +79,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
         className="flex items-center gap-2 text-[10px] sm:text-xs tracking-[0.25em] uppercase text-theme-brownMedium font-sans"
       >
         <Calendar size={12} className="text-theme-blueMedium animate-pulse" />
-        <span>A Special Invitation</span>
+        <span>A Someone Special </span>
       </motion.div>
 
       {/* Main content */}
@@ -90,10 +90,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
           transition={{ duration: 1.2, delay: 0.2 }}
           className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-wide text-theme-brownLight leading-tight"
         >
-          Halooo Irmaaa{' '}
+          Halooo Iamaaa emoyy wkwkw{' '}
           <br className="hidden sm:block" />
           <span className="font-semibold italic text-transparent bg-clip-text bg-gradient-to-r from-theme-brownLight via-theme-brownMedium to-theme-blueLight">
-            {isLocked ? 'Segera Tiba' : ''}
+            {isLocked ? '' : ''}
           </span>
         </motion.h1>
 
@@ -104,7 +104,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
           className="mt-4 sm:mt-6 text-xs sm:text-sm md:text-base tracking-[0.08em] font-light text-theme-blueLight/70 max-w-xs sm:max-w-md lg:max-w-lg font-sans uppercase leading-relaxed"
         >
           {isLocked
-            ? 'Waktu terus berjalan menuju perayaan momen yang sangat berharga. Bersiaplah untuk sebuah perjalanan kecil.'
+            ? 'mau tau gaa isinya apa diweb ini?'
             : 'Aku sudah menyiapkan sesuatu special buat kamu wlee.'}
         </motion.p>
 
@@ -161,7 +161,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
                 className="flex items-center gap-1.5 text-[10px] tracking-[0.2em] uppercase font-sans text-theme-blueLight/40"
               >
                 <Lock size={10} className="text-theme-brownMedium/60" />
-                Tapii Belum waktunya dibuka. Nanti pas countdown selesai baru boleh dibukaa yaaa
+                Tapii Belum waktunya dibuka. Nanti pas countdown selesai baru bisa dibukaa yaaa
               </motion.span>
             ) : (
               <motion.span
