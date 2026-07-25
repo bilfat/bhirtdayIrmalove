@@ -90,7 +90,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNext }) => {
           transition={{ duration: 1.2, delay: 0.2 }}
           className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light tracking-wide text-theme-brownLight leading-tight"
         >
-          Halooo Imaaa emoyy wkwkw{' '}
+          Halooo Imaaaa{' '}
           <br className="hidden sm:block" />
           <span className="font-semibold italic text-transparent bg-clip-text bg-gradient-to-r from-theme-brownLight via-theme-brownMedium to-theme-blueLight">
             {isLocked ? '' : ''}
