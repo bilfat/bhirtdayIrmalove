@@ -197,14 +197,14 @@ const FallingPhotos: React.FC = () => {
       {cards.map((card) => (
         <motion.div
           key={card.id}
-          // Posisikan awal di top: 0, lalu gunakan y (translateY) untuk animasi jatuh
+          // Gunakan top (%) alih-alih y (vh) untuk kompabilitas penuh pada browser mobile (seperti iOS Safari)
           initial={{
-            y: '-20vh',
+            top: '-15%',
             opacity: 0,
             rotate: card.startRotate,
           }}
           animate={{
-            y: '115vh',
+            top: '112%',
             opacity: [0, card.opacity, card.opacity, 0],
             rotate: card.endRotate,
           }}
@@ -224,7 +224,6 @@ const FallingPhotos: React.FC = () => {
           }}
           style={{
             position: 'absolute',
-            top: 0,
             left: `${card.xVw}%`,
             width: card.size,
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.55))',
