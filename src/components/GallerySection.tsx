@@ -192,19 +192,19 @@ const FallingPhotos: React.FC = () => {
     <div
       aria-hidden="true"
       className="absolute inset-0 overflow-hidden pointer-events-none"
-      style={{ zIndex: 1 }}
+      style={{ zIndex: 0 }}
     >
       {cards.map((card) => (
         <motion.div
           key={card.id}
-          // Start above the visible area, fall to below it
+          // Posisikan awal di top: 0, lalu gunakan y (translateY) untuk animasi jatuh
           initial={{
-            top: '-15%',
+            y: '-20vh',
             opacity: 0,
             rotate: card.startRotate,
           }}
           animate={{
-            top: '112%',
+            y: '115vh',
             opacity: [0, card.opacity, card.opacity, 0],
             rotate: card.endRotate,
           }}
@@ -214,10 +214,17 @@ const FallingPhotos: React.FC = () => {
             repeat: Infinity,
             ease: 'linear',
             // Opacity keyframe timings: fade in fast, hold, fade out near bottom
-            opacity: { times: [0, 0.08, 0.85, 1], ease: 'easeInOut' },
+            opacity: {
+              times: [0, 0.08, 0.85, 1],
+              ease: 'easeInOut',
+              duration: card.duration,
+              delay: card.delay,
+              repeat: Infinity,
+            },
           }}
           style={{
             position: 'absolute',
+            top: 0,
             left: `${card.xVw}%`,
             width: card.size,
             filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.55))',
