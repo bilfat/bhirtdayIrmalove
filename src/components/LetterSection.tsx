@@ -217,7 +217,7 @@ export const LetterSection: React.FC<LetterSectionProps> = ({ onNext }) => {
             {/* Letter Content */}
             <div className="font-serif text-xs sm:text-sm md:text-base text-theme-brownLight/90 leading-relaxed sm:leading-loose space-y-3.5 sm:space-y-5 italic font-light max-w-md mx-auto relative z-10">
               <p>
-               Di usia yang ke-21 ini, selamat bertambah umur yaa. 🥳🤍 Semoga selalu diberikan kesehatan, umur yang panjang, kebahagiaan, dan semoga setiap harimu dipenuhi dengan senyuman manis khas kamu. Jangan sering-sering badmood yaa, semoga lebih banyak hal baik yang datang menghampiri.
+               gaa kerasa udah 21 tahun yaa maaa 🥳🤍 Semoga selalu diberikan kesehatan, umur yang panjang, kebahagiaan, dan semoga setiap harimu dipenuhi dengan senyuman manis khas kamu. Jangan sering-sering badmood yaa, semoga lebih banyak hal baik yang datang menghampiri.
               </p>
               <p>
                 Semoga kamu selalu menjadi anak yang berbakti dan membanggakan kedua orang tua. Semoga setiap doa yang kamu panjatkan dikabulkan, rezekimu semakin lancar, segala urusan dimudahkan, dan semua cita-cita yang kamu perjuangkan bisa tercapai satu per satu. Jangan pernah takut untuk mencoba hal-hal baru, karena aku yakin kamu jauh lebih hebat dari yang kamu kira.
